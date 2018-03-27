@@ -2,7 +2,7 @@ package com.swatt.test;
 
 import java.util.ArrayList;
 
-import gerrySeidman.util.NameValue;
+import com.swatt.util.general.NameValue;
 
 public abstract class AbstractTestValidator implements GenericTestValidator {
 	protected String topic;
