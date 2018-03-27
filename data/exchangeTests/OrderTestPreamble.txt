@@ -1,0 +1,28 @@
+package PACKAGE;
+
+import java.util.ArrayList;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.swatt.exchange.types.*;
+
+import com.swatt.util.general.OperationFailedException;
+
+COMMENT
+public class CLASSNAME {
+	private SimpleExchange simpleExchange;
+
+	@BeforeAll
+	static void init() throws Exception {
+		
+	}
+	
+	@BeforeEach
+	void recreateExchange() throws OperationFailedException {
+		simpleExchange = new SimpleExchange();
+	}
+
+	// Tests
+
