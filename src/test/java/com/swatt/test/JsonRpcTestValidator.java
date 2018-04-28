@@ -24,6 +24,7 @@ public class JsonRpcTestValidator extends AbstractTestValidator {
 	@Override
 	public void validate() {
 		try {
+		    @SuppressWarnings("unused")
 			URL url = new URL(baseUrl + urlPath);
 			
 			// FIXME: Still needs to be implemented
