@@ -35,18 +35,18 @@ public class ConnectionPool {
     private LinkedList<Entry> busyConnections = new LinkedList<>();
 
     private class Entry {
-        private Connection conn;
+        private Connection connection;
         private long started = System.currentTimeMillis();
 
         Entry(Connection conn) {
-            this.conn = conn;
+            this.connection = conn;
         }
 
         boolean isValid() throws SQLException {
             long now = System.currentTimeMillis();
             long alive = now - started;
 
-            return (alive < maxAge) && conn.isValid(1);
+            return (alive < maxAge) && connection.isValid(1);
         }
     }
 
@@ -103,7 +103,7 @@ public class ConnectionPool {
 
         while (freeConnections.size() > 0) {
             entry = freeConnections.removeFirst();
-            Connection conn = entry.conn;
+            // Connection conn = entry.conn;
 
             if (entry.isValid())
                 return entry;
@@ -113,7 +113,7 @@ public class ConnectionPool {
     }
 
     public void returnConnection(Connection conn) throws SQLException {
-        conn.close(); // releases ConnecitonHolder if not already released
+        conn.close(); // releases ConnectionHolder if not already released
     }
 
     private void releaseConnection(Entry entry) throws SQLException {
@@ -128,20 +128,18 @@ public class ConnectionPool {
 
     private class ProxyConnection implements Connection {
         private Entry entry;
-        private Connection conn;
+        private Connection connection;
         private boolean closed = false;
 
         ProxyConnection(Entry entry) {
             this.entry = entry;
-            this.conn = entry.conn;
+            this.connection = entry.connection;
         }
 
         public void close() throws SQLException {
             if (!closed) {
                 releaseConnection(entry);
-
-                conn = null;
-
+                connection = null;
                 closed = true;
             }
         }
@@ -150,351 +148,351 @@ public class ConnectionPool {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.createStatement();
+            return connection.createStatement();
         }
 
         public PreparedStatement prepareStatement(String sql) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.prepareStatement(sql);
+            return connection.prepareStatement(sql);
         }
 
         public CallableStatement prepareCall(String sql) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.prepareCall(sql);
+            return connection.prepareCall(sql);
         }
 
         public String nativeSQL(String sql) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.nativeSQL(sql);
+            return connection.nativeSQL(sql);
         }
 
         public void setAutoCommit(boolean autoCommit) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.setAutoCommit(autoCommit);
+            connection.setAutoCommit(autoCommit);
         }
 
         public boolean getAutoCommit() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getAutoCommit();
+            return connection.getAutoCommit();
         }
 
         public void commit() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.commit();
+            connection.commit();
         }
 
         public void rollback() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.rollback();
+            connection.rollback();
         }
 
         public boolean isClosed() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.isClosed();
+            return connection.isClosed();
         }
 
         public DatabaseMetaData getMetaData() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getMetaData();
+            return connection.getMetaData();
         }
 
         public void setReadOnly(boolean readOnly) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.setReadOnly(readOnly);
+            connection.setReadOnly(readOnly);
         }
 
         public boolean isReadOnly() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.isReadOnly();
+            return connection.isReadOnly();
         }
 
         public void setCatalog(String catalog) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.setCatalog(catalog);
+            connection.setCatalog(catalog);
         }
 
         public String getCatalog() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getCatalog();
+            return connection.getCatalog();
         }
 
         public void setTransactionIsolation(int level) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.setTransactionIsolation(level);
+            connection.setTransactionIsolation(level);
         }
 
         public int getTransactionIsolation() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getTransactionIsolation();
+            return connection.getTransactionIsolation();
         }
 
         public SQLWarning getWarnings() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getWarnings();
+            return connection.getWarnings();
         }
 
         public void clearWarnings() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.clearWarnings();
+            connection.clearWarnings();
         }
 
         public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.createStatement(resultSetType, resultSetConcurrency);
+            return connection.createStatement(resultSetType, resultSetConcurrency);
         }
 
         public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.prepareStatement(sql, resultSetType, resultSetConcurrency);
+            return connection.prepareStatement(sql, resultSetType, resultSetConcurrency);
         }
 
         public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.prepareCall(sql, resultSetType, resultSetConcurrency);
+            return connection.prepareCall(sql, resultSetType, resultSetConcurrency);
         }
 
         public java.util.Map<String, Class<?>> getTypeMap() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getTypeMap();
+            return connection.getTypeMap();
         }
 
         public void setTypeMap(java.util.Map<String, Class<?>> map) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.setTypeMap(map);
+            connection.setTypeMap(map);
         }
 
         public void setHoldability(int holdability) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.setHoldability(holdability);
+            connection.setHoldability(holdability);
         }
 
         public int getHoldability() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getHoldability();
+            return connection.getHoldability();
         }
 
         public Savepoint setSavepoint() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.setSavepoint();
+            return connection.setSavepoint();
         }
 
         public Savepoint setSavepoint(String name) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.setSavepoint(name);
+            return connection.setSavepoint(name);
         }
 
         public void rollback(Savepoint savepoint) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.rollback(savepoint);
+            connection.rollback(savepoint);
         }
 
         public void releaseSavepoint(Savepoint savepoint) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.releaseSavepoint(savepoint);
+            connection.releaseSavepoint(savepoint);
         }
 
         public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
+            return connection.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
         }
 
         public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+            return connection.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
         }
 
         public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+            return connection.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
         }
 
         public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.prepareStatement(sql, autoGeneratedKeys);
+            return connection.prepareStatement(sql, autoGeneratedKeys);
         }
 
         public PreparedStatement prepareStatement(String sql, int columnIndexes[]) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.prepareStatement(sql, columnIndexes);
+            return connection.prepareStatement(sql, columnIndexes);
         }
 
         public PreparedStatement prepareStatement(String sql, String columnNames[]) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.prepareStatement(sql, columnNames);
+            return connection.prepareStatement(sql, columnNames);
         }
 
         public Clob createClob() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.createClob();
+            return connection.createClob();
         }
 
         public Blob createBlob() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.createBlob();
+            return connection.createBlob();
         }
 
         public NClob createNClob() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.createNClob();
+            return connection.createNClob();
         }
 
         public SQLXML createSQLXML() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.createSQLXML();
+            return connection.createSQLXML();
         }
 
         public boolean isValid(int timeout) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.isValid(timeout);
+            return connection.isValid(timeout);
         }
 
         public void setClientInfo(String name, String value) throws SQLClientInfoException {
-            conn.setClientInfo(name, value);
+            connection.setClientInfo(name, value);
         }
 
         public void setClientInfo(Properties properties) throws SQLClientInfoException {
-            conn.setClientInfo(properties);
+            connection.setClientInfo(properties);
         }
 
         public String getClientInfo(String name) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getClientInfo(name);
+            return connection.getClientInfo(name);
         }
 
         public Properties getClientInfo() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getClientInfo();
+            return connection.getClientInfo();
         }
 
         public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.createArrayOf(typeName, elements);
+            return connection.createArrayOf(typeName, elements);
         }
 
         public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.createStruct(typeName, attributes);
+            return connection.createStruct(typeName, attributes);
         }
 
         public void setSchema(String schema) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.setSchema(schema);
+            connection.setSchema(schema);
         }
 
         public String getSchema() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getSchema();
+            return connection.getSchema();
         }
 
         public void abort(Executor executor) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.abort(executor);
+            connection.abort(executor);
         }
 
         public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            conn.setNetworkTimeout(executor, milliseconds);
+            connection.setNetworkTimeout(executor, milliseconds);
         }
 
         public int getNetworkTimeout() throws SQLException {
             if (closed)
                 throw new SQLException("Connection Closed");
 
-            return conn.getNetworkTimeout();
+            return connection.getNetworkTimeout();
         }
 
         public <T> T unwrap(final Class<T> iface) throws SQLException {
