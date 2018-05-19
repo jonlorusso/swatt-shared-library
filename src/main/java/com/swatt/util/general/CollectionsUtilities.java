@@ -2,6 +2,12 @@ package com.swatt.util.general;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
 public class CollectionsUtilities {
@@ -19,7 +25,34 @@ public class CollectionsUtilities {
 		
 		return properties;
 	}
+
+    public static List<Properties> loadPropertiesFromClasspath(String propertiesFileName) throws IOException {
+        List<Properties> propertiess = new ArrayList<>();
+
+        Enumeration<URL> systemResources = ClassLoader.getSystemClassLoader().getResources(propertiesFileName);
+        while (systemResources.hasMoreElements()) {
+            try (InputStream inputStream = systemResources.nextElement().openStream()) {
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                propertiess.add(properties);
+            }
+        }
+
+        return propertiess;
+    }
 	
+	public static Properties mergeProperties(List<Properties> propertiess) {
+		Properties mergedProperties = new Properties();
+		for (Properties properties : propertiess) {
+				mergedProperties.putAll(properties);
+		}
+		return mergedProperties;
+	}
+
+    public static boolean isNullOrEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
+
 //	public static Collection add(Collection collection, Object array[]) {
 //	if (array == null)
 //		return collection;

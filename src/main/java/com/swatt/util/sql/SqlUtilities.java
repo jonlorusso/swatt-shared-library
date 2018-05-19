@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public class SqlUtilities {
 	public static final String JDBC_ODBC_DRIVER_CLASS_NAME = "sun.jdbc.odbc.JdbcOdbcDriver";
-	public static final String MYSQL_DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
+	public static final String MYSQL_DRIVER_CLASS_NAME = "com.mysql.cj.jdbc.Driver";
 	public static final String ORACLE_DRIVER_CLASS_NAME = "oracle.jdbc.driver.OracleDriver";
 	public static final String SQL_SERVER_DRIVER_CLASS_NAME = "com.jnetdirect.jsql.JSQLDriver";
 	public static final String SQL_LITE_DRIVER_CLASS_NAME = "org.sqlite.JDBC";
