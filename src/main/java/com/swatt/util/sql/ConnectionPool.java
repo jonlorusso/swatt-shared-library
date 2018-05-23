@@ -22,6 +22,21 @@ import java.util.concurrent.Executor;
 
 import com.swatt.util.general.ConcurrencyUtilities;
 
+/**
+ * Connection Pool supporting 
+ * <BR><BR>
+ * LeaseDuration:   If a 'client' that has gotten the connection holds it longer than this time, then the pool will take it back leaving them an invalid connection.  This is important for when clients getConnection, but don't return connection. <BR>
+ *   A LeaseDuration of '0' will allow clients to hold connections forever<BR>
+ *   The DefaultLeaseDuration is used with getConnection().  It is overridden on a per connection basis when using getConnection(leaseDuration).<BR>
+ *   The default value for DefaultLeaseDuration is ZERO (0), so it should be set if a different value is desired.<BR>
+ *   <BR>
+ *   MaxPoolSize: Is the maximum number of underlying DB connections that can be doled out by the Connection Pool<BR>
+ *   <BR>
+ *   MinPoolSize + MaxConnectionIdleTime are used to close idle connections.   Any returned connection that is still in the free pool for MaxConnectionIdleTime will be removed.<BR>
+ *   BUT to avoid slow restart times, if MinPoolSize is set connections will remain in the free pool to respect that minimum limit<BR>
+ *
+ **/
+
 public class ConnectionPool {
 	private static final long MINUTE = 60 * 1000;
 	private static final long HOUR = 60 * MINUTE;
@@ -29,12 +44,13 @@ public class ConnectionPool {
     private String jdbcUrl;
     private String user;
     private String password;
-    private int maxSize;
+    private int maxPoolSize;
+    private int minPoolSize = 0;
 
 	private volatile long defaultConnectionLeaseDuration = 0;
 	private long leaseCheckInterval = 1 * MINUTE;			
 
-	private long maxConnecitonIdleTime = 1 * HOUR;
+	private long maxConnectionIdleTime = 1 * HOUR;
 
     private LinkedList<Entry> freeConnections = new LinkedList<Entry>();
     private LinkedList<Entry> busyConnections = new LinkedList<Entry>();
@@ -80,7 +96,7 @@ public class ConnectionPool {
         this.jdbcUrl = jdbcUrl;
         this.user = user;
         this.password = password;
-        this.maxSize = maxSize;
+        this.maxPoolSize = maxSize;
         
 		ConcurrencyUtilities.startThread(() -> {
 			ArrayList<Entry> abandonedEntrys = new ArrayList<Entry>();
@@ -120,13 +136,19 @@ public class ConnectionPool {
 					for (Entry entry: freeConnections) {
 						long idleFor = now - entry.lastCheckinTime;
 						
-						if (idleFor > maxConnecitonIdleTime)
+						if (idleFor > maxConnectionIdleTime)
 							langishingEntries.add(entry);
 					}
 					
+					int numRemaining = freeConnections.size();
+					
 					for (Entry entry: langishingEntries) {		// Retire Languishing connections
-						SqlUtilities.close(entry.connection);			// Close the underlying connection first
-						freeConnections.remove(entry);
+						
+						if ((numRemaining-1) >= minPoolSize) {
+							SqlUtilities.close(entry.connection);			// Close the underlying connection first
+							freeConnections.remove(entry);
+							numRemaining--;
+						}
 					}
 				}
 			}
@@ -148,7 +170,7 @@ public class ConnectionPool {
 
                 if (entry != null) {
                     break;
-                } else if ((freeConnections.size() + busyConnections.size()) < maxSize) {
+                } else if ((freeConnections.size() + busyConnections.size()) < maxPoolSize) {
                     Connection conn = SqlUtilities.getConnection(jdbcUrl, user, password);
                     entry = new Entry(conn);
                     entry.leaseDuration = leaseDuration;
@@ -195,8 +217,10 @@ public class ConnectionPool {
 
 	public final long getDefaultConnectionLeaseDuration() { return defaultConnectionLeaseDuration; }
 	public final void setDefaultConnectionLeaseDuration(long defaultConnectionLeaseDuration) { this.defaultConnectionLeaseDuration = defaultConnectionLeaseDuration; }
-	public final long getMaxConnecitonIdleTime() { return maxConnecitonIdleTime; }
-	public final void setMaxConnecitonIdleTime(long maxConnecitonIdleTime) { this.maxConnecitonIdleTime = maxConnecitonIdleTime; }
+	public final long getMaxConnecitonIdleTime() { return maxConnectionIdleTime; }
+	public final void setMaxConnecitonIdleTime(long maxConnecitonIdleTime) { this.maxConnectionIdleTime = maxConnecitonIdleTime; }
+	public final int getMinPoolSize() { return minPoolSize; }
+	public final void setMinPoolSize(int minPoolSize) { this.minPoolSize = minPoolSize; }
 
 	
     private class ProxyConnection implements Connection {
