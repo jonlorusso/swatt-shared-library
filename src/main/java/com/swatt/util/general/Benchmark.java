@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 public class Benchmark {
-	private NumberFormat nf = new DecimalFormat("#.###");
+	private NumberFormat nf = new DecimalFormat("#,###.##");
 	private String name;
 	private long startTime;			// This is an actual time based on the Unix Epoch time
 	private long startNanoTime;		// This is an arbitrary relative time that is not tied to any global time
@@ -46,6 +46,23 @@ public class Benchmark {
 		double duration = getDurationMillisec();
 		
 		System.out.println(prefix + ": " + nf.format(duration) + "ms");
+	}
+	
+	public void rate(long val) {
+		rate(name, val);
+	}
+	
+	
+	public void rate(String prefix) {
+		rate(prefix, counter);
+	}
+	
+	public void rate(String prefix, long val) {
+		double duration = getDurationMillisec() / 1000.0;
+		
+		double persec = val / duration;
+		
+		System.out.println(prefix + ": " + nf.format(persec) + "/sec");
 	}
 	
 	public void count() {
