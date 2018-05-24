@@ -52,6 +52,17 @@ public class CollectionsUtilities {
     public static boolean isNullOrEmpty(Collection<?> collection) {
         return collection == null || collection.isEmpty();
     }
+    
+	public static final boolean equals(Object obj1, Object obj2) {
+		if (obj1 == null) {
+			return (obj2 == null);
+		} else {
+			if (obj2 != null)
+				return obj1.equals(obj2);
+			else 
+				return false;
+		}
+	}
 
 //	public static Collection add(Collection collection, Object array[]) {
 //	if (array == null)
