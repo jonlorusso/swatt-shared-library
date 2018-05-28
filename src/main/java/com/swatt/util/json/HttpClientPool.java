@@ -20,28 +20,24 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import com.swatt.util.general.ConcurrencyUtilities;
 
 public class HttpClientPool { // FIXME: Not Industrial Strength. Does not deal with un-returned connections
-    private String url;
     private int maxSize;
     private LinkedList<CloseableHttpClient> freeHttpClients = new LinkedList<CloseableHttpClient>();
     private LinkedList<CloseableHttpClient> busyHttpClients = new LinkedList<CloseableHttpClient>();
     PoolingHttpClientConnectionManager connManager;
 
-    public HttpClientPool(String url, int maxSize) {
-        this.url = url;
+    public HttpClientPool(int maxSize) {
         this.maxSize = maxSize;
 
         PlainConnectionSocketFactory plainSocketFactory = PlainConnectionSocketFactory.getSocketFactory();
-        Registry<ConnectionSocketFactory> connSocketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", plainSocketFactory).build();
+        Registry<ConnectionSocketFactory> connSocketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create().register("http", plainSocketFactory).build();
 
         connManager = new PoolingHttpClientConnectionManager(connSocketFactoryRegistry);
-
         connManager.setMaxTotal(this.maxSize);
         connManager.setDefaultMaxPerRoute(this.maxSize);
     }
 
-    public CloseableHttpResponse execute(String params) {
-        URIBuilder uriBuilder = null;
+    public CloseableHttpResponse execute(String url, String params) {
+        URIBuilder uriBuilder;
         HttpPost httpPost = null;
 
         try {
@@ -82,7 +78,10 @@ public class HttpClientPool { // FIXME: Not Industrial Strength. Does not deal w
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            } finally {
+                returnConnection(httpClient);
             }
+            
 
             return response;
         }
