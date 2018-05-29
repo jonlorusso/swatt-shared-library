@@ -10,6 +10,7 @@
 
 	<name>swatt-common</name>
 	<artifactId>swatt-common</artifactId>
+		<version>0.0.1.1-SNAPSHOT</version>
 
 	<properties>
 	</properties>
