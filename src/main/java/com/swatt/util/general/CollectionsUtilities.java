@@ -82,18 +82,6 @@ public class CollectionsUtilities {
         
         return map;
     }
-
-    
-	public static final boolean equals(Object obj1, Object obj2) {
-		if (obj1 == null) {
-			return (obj2 == null);
-		} else {
-			if (obj2 != null)
-				return obj1.equals(obj2);
-			else 
-				return false;
-		}
-	}
     
 //	public static Collection add(Collection collection, Object array[]) {
 //	if (array == null)
@@ -564,16 +552,16 @@ public class CollectionsUtilities {
 //		return (obj1 != null) && (obj2 != null);
 //	}
 //	
-//	public static final boolean equals(Object obj1, Object obj2) {
-//		if (obj1 == null) {
-//			return (obj2 == null);
-//		} else {
-//			if (obj2 != null)
-//				return obj1.equals(obj2);
-//			else 
-//				return false;
-//		}
-//	}
+	public static final boolean equals(Object obj1, Object obj2) {
+		if (obj1 == null) {
+			return (obj2 == null);
+		} else {
+			if (obj2 != null)
+				return obj1.equals(obj2);
+			else 
+				return false;
+		}
+	}
 //	
 //	public static final boolean equals(List list1, List list2) {
 //		if (list1.size() != list2.size())

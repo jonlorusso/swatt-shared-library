@@ -275,7 +275,7 @@ public class IntHashMap<T>  {
 			Entry other = (Entry) obj;
 			
 			if (key == other.key) 
-				return CollectionsUtilities.equals(value, other.value);
+				return equals(value, other.value);
 
 			return false;
 		}
@@ -283,8 +283,21 @@ public class IntHashMap<T>  {
 		public String toString() {
 			return key + "=" + getValue();
 		}
+		
+		public static final boolean equals(Object obj1, Object obj2) {
+			if (obj1 == null) {
+				return (obj2 == null);
+			} else {
+				if (obj2 != null)
+					return obj1.equals(obj2);
+				else 
+					return false;
+			}
+		}
 
 	}
+	
+	
 
 	
 	void addEntry(int hash, long key, Object value, int bucketIndex) {
