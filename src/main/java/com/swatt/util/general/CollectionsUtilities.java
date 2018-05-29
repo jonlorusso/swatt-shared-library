@@ -7,7 +7,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class CollectionsUtilities {
@@ -53,17 +55,34 @@ public class CollectionsUtilities {
         return collection == null || collection.isEmpty();
     }
     
-	public static final boolean equals(Object obj1, Object obj2) {
-		if (obj1 == null) {
-			return (obj2 == null);
-		} else {
-			if (obj2 != null)
-				return obj1.equals(obj2);
-			else 
-				return false;
-		}
-	}
+    // newHashMap( "key", "value" )
+    public static <K, V> Map<K, V> newHashMap(K k, V v) {
+        Map<K, V> map = new HashMap<>();
+        map.put(k, v);
+        return map;
+    }
 
+    // newHashMap( "key1", "value1", "key2", "value2" )
+    public static <K, V> Map<K, V> newHashMap(K k1, V v1, K k2, V v2) {
+        Map<K, V> map = new HashMap<>();
+        map.put(k1, v1);
+        map.put(k2, v2);
+        return map;
+    }
+    
+    // newHashMap(new String[] { "key1", "key2", "key3" }, new String[] { "value1", "value2", "value3" })
+    public static <K, V> Map<K, V> newHashMap(K[] ks, V[] vs) {
+        if (ks.length != vs.length)
+            throw new RuntimeException("Mismatched number of keys and values");
+        
+        Map<K, V> map = new HashMap<>();
+        for (int i = 0; i < ks.length; i++) {
+            map.put(ks[i], vs[i]);
+        }
+        
+        return map;
+    }
+    
 //	public static Collection add(Collection collection, Object array[]) {
 //	if (array == null)
 //		return collection;
