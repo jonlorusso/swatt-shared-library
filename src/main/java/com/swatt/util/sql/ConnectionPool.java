@@ -20,9 +20,11 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import com.swatt.util.general.ConcurrencyUtilities;
+import com.swatt.util.general.OperationFailedException;
 
 // FIXME: Not Industrial Strength.  Does not deal with un-returned connections
 public class ConnectionPool {
+    public static final String DATABASE_CONNECTION_POOL_MAX_SIZE_KEY = "DATABASE_CONNECTION_POOL_MAX_SIZE";
 
     private static final long HOUR = 60 * 60 * 1000;
 
@@ -53,9 +55,26 @@ public class ConnectionPool {
     static {
         try {
             SqlUtilities.loadMySqlDriver();
-        } catch (ClassNotFoundException e) {
+        } catch (OperationFailedException e) {
             e.printStackTrace();
         }
+    }
+    
+    public ConnectionPool(Properties properties) throws OperationFailedException {
+    	String sMaxSize = null;
+    	
+    	try {
+	    	this.jdbcUrl = SqlUtilities.getJdbcURL(properties);
+	    	this.user = SqlUtilities.getUser(properties);
+	    	password = SqlUtilities.getPassword(properties);
+	    	sMaxSize = properties.getProperty(DATABASE_CONNECTION_POOL_MAX_SIZE_KEY);
+	    	
+	    	if (sMaxSize != null) 
+	    		this.maxSize = Integer.parseInt(sMaxSize);
+	    	
+    	} catch (NumberFormatException t) {
+    		throw new OperationFailedException("Invalid Connection Pool Size: " + sMaxSize);
+    	}
     }
 
     public ConnectionPool(String jdbcUrl, String user, String password, int maxSize) {
