@@ -275,7 +275,7 @@ public class IntHashMap<T>  {
 			Entry other = (Entry) obj;
 			
 			if (key == other.key) 
-				return CollectionsUtilities.equals(value, other.value);
+				return ObjectUtilities.equals(value, other.value);
 
 			return false;
 		}
