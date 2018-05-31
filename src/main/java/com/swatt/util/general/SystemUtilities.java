@@ -19,11 +19,11 @@ public class SystemUtilities {
 		return mergeEnv(properties, "");
 	}
 	
-	public static Properties mergeEnv(Properties properties, String prefix) {
+	public static Properties mergeEnv(Properties properties, String envPrefix) {
 		Map<String, String> envMap = System.getenv();
 		
 		for (String key : envMap.keySet()) {
-			String envKey = prefix + key;
+			String envKey = envPrefix + key;
 			String value = envMap.get(envKey);
 			if (value != null)
 				properties.put(key, value);
@@ -37,9 +37,9 @@ public class SystemUtilities {
 	}
 
 	
-	public static Properties loadAndMergeEnv(String propertiesFileName, String prefix) throws IOException {
+	public static Properties loadAndMergeEnv(String propertiesFileName, String envPrefix) throws IOException {
 		Properties properties = CollectionsUtilities.loadProperties(propertiesFileName);
-		return mergeEnv(properties, prefix);
+		return mergeEnv(properties, envPrefix);
 	}
 	
     public static String getEnvOrProperty(String name, Properties properties) {

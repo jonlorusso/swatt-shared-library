@@ -14,16 +14,15 @@ public class PropertiesAndDbNotJunit {
     public static void main(String[] args) {
 		try {
 			String configFile = "data/conf/PropertiesAndDbTest.conf";
-			String prefix = "";
+			String envPrefix = "";
 			
 			if (args.length > 0) 
 				configFile = args[0];
 			
 			if (args.length > 1)
-				prefix = args[1];
+				envPrefix = args[1];
 			
-			
-			Properties configProperties = SystemUtilities.loadAndMergeEnv(configFile, prefix);
+			Properties configProperties = SystemUtilities.loadAndMergeEnv(configFile, envPrefix);
 			
 			String jdbcUrl = SqlUtilities.getJdbcURL(configProperties);
 			System.out.println("jdbcUrl: " + jdbcUrl);
