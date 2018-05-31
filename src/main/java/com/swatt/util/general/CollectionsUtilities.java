@@ -2,6 +2,14 @@ package com.swatt.util.general;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class CollectionsUtilities {
@@ -19,7 +27,62 @@ public class CollectionsUtilities {
 		
 		return properties;
 	}
+
+    public static List<Properties> loadPropertiesFromClasspath(String propertiesFileName) throws IOException {
+        List<Properties> propertiess = new ArrayList<>();
+
+        Enumeration<URL> systemResources = ClassLoader.getSystemClassLoader().getResources(propertiesFileName);
+        while (systemResources.hasMoreElements()) {
+            try (InputStream inputStream = systemResources.nextElement().openStream()) {
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                propertiess.add(properties);
+            }
+        }
+
+        return propertiess;
+    }
 	
+	public static Properties mergeProperties(List<Properties> propertiess) {
+		Properties mergedProperties = new Properties();
+		for (Properties properties : propertiess) {
+				mergedProperties.putAll(properties);
+		}
+		return mergedProperties;
+	}
+
+    public static boolean isNullOrEmpty(Collection<?> collection) {
+        return collection == null || collection.isEmpty();
+    }
+    
+    // newHashMap( "key", "value" )
+    public static <K, V> Map<K, V> newHashMap(K k, V v) {
+        Map<K, V> map = new HashMap<>();
+        map.put(k, v);
+        return map;
+    }
+
+    // newHashMap( "key1", "value1", "key2", "value2" )
+    public static <K, V> Map<K, V> newHashMap(K k1, V v1, K k2, V v2) {
+        Map<K, V> map = new HashMap<>();
+        map.put(k1, v1);
+        map.put(k2, v2);
+        return map;
+    }
+    
+    // newHashMap(new String[] { "key1", "key2", "key3" }, new String[] { "value1", "value2", "value3" })
+    public static <K, V> Map<K, V> newHashMap(K[] ks, V[] vs) {
+        if (ks.length != vs.length)
+            throw new RuntimeException("Mismatched number of keys and values");
+        
+        Map<K, V> map = new HashMap<>();
+        for (int i = 0; i < ks.length; i++) {
+            map.put(ks[i], vs[i]);
+        }
+        
+        return map;
+    }
+    
 //	public static Collection add(Collection collection, Object array[]) {
 //	if (array == null)
 //		return collection;
@@ -480,25 +543,6 @@ public class CollectionsUtilities {
 //		return ((pos >= 0) && (pos < arr.length));
 //	}
 //	
-//	public static final boolean isBothNull(Object obj1, Object obj2) {
-//		return (obj1 == null) && (obj2 == null);
-//	}
-//
-//	
-//	public static final boolean isBothNonNull(Object obj1, Object obj2) {
-//		return (obj1 != null) && (obj2 != null);
-//	}
-//	
-//	public static final boolean equals(Object obj1, Object obj2) {
-//		if (obj1 == null) {
-//			return (obj2 == null);
-//		} else {
-//			if (obj2 != null)
-//				return obj1.equals(obj2);
-//			else 
-//				return false;
-//		}
-//	}
 //	
 //	public static final boolean equals(List list1, List list2) {
 //		if (list1.size() != list2.size())
@@ -527,49 +571,7 @@ public class CollectionsUtilities {
 //		return results;
 //	}
 //	
-//	public static final boolean toBoolean(Object obj) {
-//		if (obj instanceof Boolean) {
-//			Boolean b = (Boolean) obj;
-//			return b.booleanValue();
-//		} else if (obj instanceof String) {
-//			String s = (String) obj;
-//			return s.equalsIgnoreCase("true");
-//		} else
-//			throw new IllegalArgumentException("Not convertable to a boolean");
-//	}
-//	
-//	public static final int toInt(Object obj) {
-//		if (obj instanceof Number) {
-//			Number number = (Integer) obj;
-//			return number.intValue();
-//		} else if (obj instanceof String) {
-//			String s = (String) obj;
-//			return Integer.parseInt(s);
-//		} else
-//			throw new IllegalArgumentException("Not convertable to a int");
-//	}
-//	
-//	public static final long toLong(Object obj) {
-//		if (obj instanceof Number) {
-//			Number number = (Integer) obj;
-//			return number.longValue();
-//		} else if (obj instanceof String) {
-//			String s = (String) obj;
-//			return Long.parseLong(s);
-//		} else
-//			throw new IllegalArgumentException("Not convertable to a long");
-//	}
-//	
-//	public static final double toDouble(Object obj) {
-//		if (obj instanceof Number) {
-//			Number number = (Integer) obj;
-//			return number.doubleValue();
-//		} else if (obj instanceof String) {
-//			String s = (String) obj;
-//			return Double.parseDouble(s);
-//		} else
-//			throw new IllegalArgumentException("Not convertable to a double");
-//	}
+
 //
 //	public static final boolean[] toBoolean(Object objs[]) {
 //		boolean results[] = new boolean[objs.length];

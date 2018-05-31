@@ -27,6 +27,12 @@ public class ConcurrencyUtilities {
 		} catch (InterruptedException e) { }
 	}
 	
+	public static final void waitForCompletion(Thread thread, long timeout) {
+		try {
+			thread.join(timeout);
+		} catch (InterruptedException e) { }
+	}
+	
 	public static final void waitForCompletion(Collection<Thread> threads) {
 		LinkedList<Thread> activeThreads = new LinkedList<Thread>(threads);	// make a copy just to be sure he want's to retain the list
 		

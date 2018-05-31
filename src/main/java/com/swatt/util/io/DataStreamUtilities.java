@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class DataStreamUtilities {
 	private static final int NULL = 1;
@@ -364,19 +365,49 @@ public class DataStreamUtilities {
 		}
 	}
 	
-	public static final DataStreamSerializable copy(DataStreamSerializable dataStreamSerializable) throws SerializationException {
+	public static final boolean equals(DataStreamSerializable obj1, DataStreamSerializable obj2) throws SerializationException {
+		try {
+			byte buf1[] = toBytes(obj1);
+			byte buf2[] = toBytes(obj2);
+			
+			return Arrays.equals(buf1, buf2);
+		} catch (Throwable e) {
+			throw new SerializationException("Unable to Convert to Bytes", e);
+		}
+	}
+	
+	public static final byte[] toBytes(DataStreamSerializable dataStreamSerializable) throws SerializationException {
 		try {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			DataOutputStream dout = new DataOutputStream(bout);
 			writeDataStreamSerializable(dout, dataStreamSerializable);
 			dout.close();
 			
-			ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
+			return bout.toByteArray();
+			
+		} catch (Throwable e) {
+			throw new SerializationException("Unable to Convert to Bytes", e);
+		}
+	}
+	
+	public static final DataStreamSerializable fromBytes(byte buf[], Class<? extends DataStreamSerializable> clazz) throws SerializationException {
+		try {
+			ByteArrayInputStream bin = new ByteArrayInputStream(buf);
 			DataInputStream din = new DataInputStream(bin);
-			DataStreamSerializable result = readDataStreamSerializable(din, dataStreamSerializable.getClass());
+			DataStreamSerializable result = readDataStreamSerializable(din, clazz);
 			bin.close();
 			
 			return result;
+		} catch (Throwable e) {
+			throw new SerializationException("Unable to Copy", e);
+		}
+	}
+	
+	public static final DataStreamSerializable copy(DataStreamSerializable dataStreamSerializable) throws SerializationException {
+		try {
+			byte buf[] = toBytes(dataStreamSerializable);
+			
+			return fromBytes(buf, dataStreamSerializable.getClass());
 		} catch (Throwable e) {
 			throw new SerializationException("Unable to Copy", e);
 		}
