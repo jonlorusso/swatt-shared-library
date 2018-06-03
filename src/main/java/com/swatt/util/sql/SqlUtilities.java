@@ -167,15 +167,13 @@ public class SqlUtilities {
     }
 
     public static String getEmptyTableSql(String tableName) {
-        return "TRUNCATE " + tableName;
+        return "TRUNCATE TABLE " + tableName;
     }
     
     public static void loadCsv(Connection connection, String filePath, String tableName, int linesIgnore, String columnList) throws SQLException {
         String loadQuery = "LOAD DATA LOCAL INFILE '" + filePath + "' INTO TABLE " + tableName + " FIELDS TERMINATED BY ','" + " LINES TERMINATED BY '\n' IGNORE " + linesIgnore + " LINES (" + columnList + ") ";
-        
-        Statement statement = connection.createStatement();
-        statement.execute(loadQuery);
-        statement.close();
+        Statement stmt = connection.createStatement();
+        stmt.execute(loadQuery);
     }
 
     public static void close(Connection connection) {
