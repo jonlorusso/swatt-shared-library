@@ -13,7 +13,7 @@ public class PropertiesAndDbNotJunit {
 	
     public static void main(String[] args) {
 		try {
-			String configFile = "data/conf/PropertiesAndDbTest.conf";
+			String configFile = "data/conf/PropertiesAndDbTest.properties";
 			String envPrefix = "";
 			
 			if (args.length > 0) 
