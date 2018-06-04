@@ -1,12 +1,10 @@
 package com.swatt.util.json;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -20,10 +18,8 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.util.EntityUtils;
 
 import com.swatt.util.general.ConcurrencyUtilities;
-import com.swatt.util.io.FileUtilities;
 
 public class HttpClientPool { // FIXME: Not Industrial Strength. Does not deal with un-returned connections
     private int maxSize;

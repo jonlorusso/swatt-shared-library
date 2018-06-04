@@ -50,6 +50,61 @@ public class CollectionsUtilities {
 		}
 		return mergedProperties;
 	}
+	
+	public static String getString(Properties properties, String name) {
+		return getString(properties, name, null);
+	}
+
+	public static String getString(Properties properties, String name, String defaultValue) {
+		return properties.getProperty(name, defaultValue);
+	}
+	
+	
+	public static int getInt(Properties properties, String name) {
+		return getInt(properties, name, 0);
+	}
+	
+	public static int getInt(Properties properties, String name, int defaultValue) {
+		String sValue = properties.getProperty(name);
+		
+		if (sValue != null) {
+			sValue = sValue.trim();
+			return Integer.parseInt(sValue);
+		} else
+			return defaultValue;
+	}
+	
+	public static double getDouble(Properties properties, String name) {
+		return getDouble(properties, name, 0);
+	}
+	
+	public static double getDouble(Properties properties, String name, double defaultValue) {
+		String sValue = properties.getProperty(name);
+		
+		if (sValue != null) {
+			sValue = sValue.trim();
+			return Double.parseDouble(sValue);
+		} else
+			return defaultValue;
+	}
+	
+	public static boolean getBoolean(Properties properties, String name) {
+		return getBoolean(properties, name, false);
+	}
+	
+	public static boolean getBoolean(Properties properties, String name, boolean defaultValue) {
+		String sValue = properties.getProperty(name);
+		
+		if (sValue != null) {
+			sValue = sValue.trim();
+			
+			if (sValue.equalsIgnoreCase("TRUE") | !sValue.equals("0"))
+				return true;
+			else
+				return false;
+		} else
+			return defaultValue;
+	}
 
     public static boolean isNullOrEmpty(Collection<?> collection) {
         return collection == null || collection.isEmpty();
