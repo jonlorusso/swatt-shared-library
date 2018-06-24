@@ -33,7 +33,10 @@ public class ResourceUtilities {
 	}
 	
 	public static String getResourceAsText(String resourceName) throws IOException {
-		return getResourceAsText(null, resourceName);
+		if (resourceName.startsWith("/"))
+			return getResourceAsText(Object.class, resourceName);
+		else
+			throw new IOException("Resources not bound to a class must be fully qualified (ie start with '/')");
 	}
 
 	

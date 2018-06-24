@@ -615,12 +615,19 @@ public class StringUtilities {
 		return (String[]) strings.toArray(new String[strings.size()]);
 	}
 	
+	public final static String makeNativeOsLines(String text) {
+		if (SystemUtilities.isWindowsFamily())
+			return makeDosLines(text);
+		else
+			return makeUnixLines(text);
+	}
+	
 	public final static String makeUnixLines(String text) {
 		return text.replaceAll("\r", "");
 	}
 	
 	public final static String makeDosLines(String text) {
 		text = makeUnixLines(text);
-		return text.replaceAll("\n", "\n\r");
+		return text.replaceAll("\n", "\r\n");
 	}
 }
