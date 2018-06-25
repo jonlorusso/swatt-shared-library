@@ -6,6 +6,8 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import com.swatt.util.general.StringUtilities;
+
 
 public class ResourceUtilities {
 	public static URL getResource(Class<?> clazz, String resourceName) {
@@ -52,6 +54,22 @@ public class ResourceUtilities {
 			return getResourceAsText((Class<?>) obj, resourceName);
 		else
 			return getResourceAsText(obj.getClass(), resourceName);
+	}
+	
+	public static String getResourceAsNativeOsText(String resourceName) throws IOException {
+		String text = getResourceAsText(resourceName);
+		return StringUtilities.makeNativeOsLines(text);
+	}
+
+	
+	public static String getResourceAsNativeOsText(Class<?> clazz, String resourceName) throws IOException {
+		String text = getResourceAsText(clazz, resourceName);
+		return StringUtilities.makeNativeOsLines(text);
+	}
+	
+	public static String getResourceAsNativeOsText(Object obj, String resourceName) throws IOException {
+		String text = getResourceAsText(obj, resourceName);
+		return StringUtilities.makeNativeOsLines(text);
 	}
 	
 	public static ResourceBundle getResourceBundle(String bundleName) throws IOException {
