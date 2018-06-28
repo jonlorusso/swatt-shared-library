@@ -98,13 +98,16 @@ public class CollectionsUtilities {
 		if (sValue != null) {
 			sValue = sValue.trim();
 			
-			if (sValue.equalsIgnoreCase("TRUE") | !sValue.equals("0"))
+			if (sValue.equalsIgnoreCase("TRUE") | sValue.equals("1") | sValue.equals("-1"))
 				return true;
-			else
+			if (sValue.equalsIgnoreCase("FALSE") | sValue.equals("0"))
 				return false;
+			else
+				throw new NumberFormatException("Invalid value for a boolean property");
 		} else
 			return defaultValue;
 	}
+
 
     public static boolean isNullOrEmpty(Collection<?> collection) {
         return collection == null || collection.isEmpty();
