@@ -61,4 +61,10 @@ public class SystemUtilities {
     public static String getPropertyOrEnv(String name, Properties properties) {
     	return getEnvOrProperty(name, properties, null);
     }
+    
+	public static boolean isWindowsFamily() {
+		String osName = System.getProperty("os.name");
+		
+		return (osName.toUpperCase().startsWith("WIN"));
+	}
 }
