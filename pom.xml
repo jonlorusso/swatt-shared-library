@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>com.swatt</groupId>
 		<artifactId>swatt-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<name>swatt-common</name>
 	<artifactId>swatt-common</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<properties>
 	</properties>
